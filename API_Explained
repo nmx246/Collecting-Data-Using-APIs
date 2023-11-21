@@ -1,0 +1,121 @@
+# Application Program Interface
+# import pandas as pd
+# from pycoingecko import CoinGeckoAPI
+# cg= CoinGeckoAPI()
+# bitcoin_data = cg.get_coin_market_chart_by_id(id='bitcoin', vs_currency='usd', days=30)
+# print(bitcoin_data)
+# data = pd.DataFrame(bitcoin_data, columns=['TimeStamp', 'price'])
+# data['Date'] = pd.to_datetime(data['TimeStamp'], unit='ms')
+# candlestick_data = data.groupby(data.Data.dt.date).agg({'price': ['min', 'max', 'first', 'last']})
+import nba_api as nba_api
+
+# NBA
+# from nba_api.stats.static import teams
+# import matplotlib.pyplot as plt
+# import pandas as pd
+#
+# dict_ = {'a': [11, 21, 31], 'b': [12, 22, 32]}
+#
+#
+# def one_dict(list_dict):
+#     keys = list_dict[0].keys()
+#     out_dict = {key: [] for key in keys}
+#     for dict_ in list_dict:
+#         for key, value in dict_.items():
+#             out_dict[key].append(value)
+#     return out_dict
+#
+# nba_teams = teams.get_teams()
+# nba_teams[0:3]
+# dict_nba_team=one_dict(nba_teams)
+# df_teams=pd.DataFrame(dict_nba_team)
+# print(df_teams.head())
+#
+# df_warriors=df_teams[df_teams['nickname']=='Warriors']
+# print(df_warriors)
+#
+# id_warriors=df_warriors[['id']].values[0][0]
+# # we now have an integer that can be used to request the Warriors information
+# print(id_warriors)
+#
+# from nba_api.stats.endpoints import leaguegamefinder
+
+# # api_url="http://127.0.0.1:5000/data"
+import requests
+import pandas as pd
+#
+api_url = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DA0321EN-SkillsNetwork/labs/module%201/Accessing%20Data%20Using%20APIs/jobs.json"
+
+
+def get_number_of_jobs_T(technology):
+    response = requests.get(api_url)
+    job_data = response.json()
+    # Filter jobs based on the provided technology
+    matching_jobs = [job for job in job_data if technology.lower() in job.get('Key Skills', '').lower()]
+    number_of_jobs = len(matching_jobs)
+
+    # your code goes here
+    return technology, number_of_jobs
+
+
+# print(get_number_of_jobs_T("Python"))
+
+
+def get_number_of_jobs_L(location):
+    response = requests.get(api_url)
+    job_data = response.json()
+    # Filter jobs based on the provided technology
+    matching_jobs = [job for job in job_data if location.lower() in job.get('Location', '').lower()]
+    number_of_jobs = len(matching_jobs)
+    # your coe goes here
+    return location, number_of_jobs
+#
+#
+# locations = ["Los Angeles", "New York", "San Francisco", "Washington DC", "Seattle"]
+#
+#
+# for location in locations:
+#     result = get_number_of_jobs_L(location)
+#     print(f"Number of jobs in {result[0]}: {result[1]}")
+
+# Save to Excel
+# Create a python list of all locations for which you need to find the number of jobs postings.
+locations = ["Los Angeles", "New York", "San Francisco", "Washington DC", "Seattle", "Austin", "Detroit"]
+
+# Import libraries required to create excel spreadsheet
+from openpyxl import Workbook
+
+# # Create a workbook and select the active worksheet
+# wb = Workbook()  # create a workbook object
+# ws = wb.active  # use the active worksheet
+#
+# # Find the number of jobs postings for each of the location in the above list. Write the Location name and the number of jobs postings into the excel spreadsheet.
+# # Write the header to the worksheet
+# ws.append(['Location', 'Number of Jobs'])
+# for location in locations:
+#     result = get_number_of_jobs_L(location)
+#     print(f"Number of jobs in {result[0]}: {result[1]}")
+#     ws.append([result[0], result[1]])
+#
+# # Save into an excel spreadsheet named 'job-postings.xlsx'.
+# wb.save("job-postings.xlsx")
+
+
+
+# In the similar way, you can try for below given technologies and results can be stored in an excel sheet.
+jobs = ["C", "C#", "C++", "Java", "JavaScript", "Python", "Scala", "Oracle", "SQL Server", "MySQL Server", "PostgreSQL", "MongoDB"]
+
+wb = Workbook()  # create a workbook object
+ws = wb.active  # use the active worksheet
+ws.append(['Technology', 'Number of Jobs'])
+
+for job in jobs:
+    result = get_number_of_jobs_T(job)
+    print(f"Number of jobs in {result[0]}: {result[1]}")
+    ws.append([result[0], result[1]])
+
+
+wb.save("Tech_Jobs.xlsx")
+
+
+
